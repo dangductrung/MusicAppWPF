@@ -1,0 +1,153 @@
+﻿<Window x:Class="Project03.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project03"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid Width="250" HorizontalAlignment="Left" Background="#bdc3c7" Name="playlistGrid">
+            <StackPanel >
+                <StackPanel Margin="0,5,15,0" Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right" 
+                            VerticalAlignment="Top" Background="Transparent" 
+                            Padding="0" Margin="0,5,15,0" BorderThickness="0"
+                            Click="deleteMusic">
+                        <materialDesign:PackIcon Foreground="#7f8c8d" Kind="Delete" Height="20" Width="20"/>
+                    </Button>
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Transparent" Padding="0" Margin="0,5,15,0" BorderThickness="0">
+                        <materialDesign:PackIcon Foreground="#7f8c8d" Kind="PlaylistMusic" Height="20" Width="20"/>
+                    </Button>
+                </StackPanel>
+            
+                <TreeView Name="currentPlayList" 
+                      SelectedItemChanged="selectedMusic"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      >
+                    <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                        <StackPanel Name="currentListStackpanel" Orientation="Horizontal" HorizontalAlignment="Stretch" Width="200" MaxWidth="200">
+                                <CheckBox Unchecked="checkBoxUncheckedChanged" Checked="checkBoxChanged"  IsChecked="{Binding IsSelected}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                <TextBlock Width="150" TextTrimming="CharacterEllipsis" Foreground="Black" Padding="0" Text="{Binding Title}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+                    
+                </TreeView>
+            </StackPanel>
+            <Grid Height="50" VerticalAlignment="Bottom">
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <Button ToolTip="Favorite playlist" Margin="10" Padding="0" Height="30" Width="30" Background="Transparent" BorderThickness="0">
+                        <materialDesign:PackIcon Foreground="#7f8c8d" Kind="LibraryMusic" Height="30" Width="30"/>
+                    </Button>
+                    <materialDesign:PopupBox Margin="10" PlacementMode="TopAndAlignLeftEdges" StaysOpen="False" >
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="FolderOpen" Foreground="#7f8c8d" Height="30" Width="30" Background="Transparent"/>
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel>
+                            <Button ToolTip="Open File Media" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Padding="0" Height="30" Width="30" Background="Transparent" BorderThickness="0" Click="AddMediaButtonClick">
+                                <materialDesign:PackIcon Foreground="#7f8c8d" Kind="FileMusic" Height="30" Width="30"/>
+                            </Button>
+
+                            <Button ToolTip="Open Folder Media" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Padding="0" Height="30" Width="30" Background="Transparent" BorderThickness="0" Click="OpenFolderMediaButtonClick">
+                                <materialDesign:PackIcon Foreground="#7f8c8d" Kind="Folder" Height="30" Width="30"/>
+                            </Button>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignLeftEdges" StaysOpen="False" Margin="10">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Height="30" Width="30" Kind="FileDocument" Foreground="#7f8c8d"/>
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel>
+                            <Button ToolTip="Open File Playlist"  HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Padding="0" Height="30" Width="30" Background="Transparent" BorderThickness="0">
+                                <materialDesign:PackIcon Kind="File" Height="30" Foreground="#7f8c8d" Width="30"/>
+                            </Button>
+                            <Button ToolTip="Save Playlist" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Padding="0" Height="30" Width="30" Background="Transparent" BorderThickness="0">
+                                <materialDesign:PackIcon Kind="ContentSave" Height="30" Width="30" Foreground="#7f8c8d"/>
+                            </Button>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+
+                    <Button ToolTip="Setting Stop Time" Background="Transparent" BorderThickness="0" Padding="0" Margin="10">
+                        <materialDesign:PackIcon Kind="Alarm" Height="30" Width="30" Foreground="#7f8c8d"/>
+                    </Button>
+                </StackPanel>
+                <ToggleButton HorizontalAlignment="Right" ToolTip="Dark Theme" Click="darkThemeMode" Name="themeToggle" Margin="10"/>
+            </Grid>
+        </Grid>
+
+        <Grid Width="550" HorizontalAlignment="Right" Background="#34495e" Name="controlMusicGrid">
+            <StackPanel>
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                    <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges">
+                        <StackPanel>
+                            <Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Clock" Margin="5"/>
+                                    <Label Content="Timer"/>
+                                </StackPanel>
+                            </Button>
+                            <Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="PlaylistMusic" Margin="5"/>
+                                    <Label Content="Add to playlist"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+                </Grid>
+                <StackPanel>
+                    <Grid Height="225" Width="400">
+                        <Image />
+                    </Grid>
+                    <TextBlock TextTrimming="CharacterEllipsis"  FontSize="25" Margin="25,0,0,25" Padding="0" Height="30" Name="currentMediaNameTextBlock" />
+                </StackPanel>
+                <Grid VerticalAlignment="Bottom">
+                    <StackPanel Margin="5">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label Content="00:00"  Name="currentTime"/>
+                            <Slider Width="450" Value="0" Maximum="100" Name="SliderMusicBar" ValueChanged="changeValueSliderbar"/>
+                            <Label Content="00:00"  Name="fullTime"/>
+                        </StackPanel>
+                        <Grid HorizontalAlignment="Stretch">
+                            <StackPanel HorizontalAlignment="Left">
+                                <Button Background="Transparent" HorizontalAlignment="Left" Height="50" Width="50" Padding="0" BorderThickness="0" Click="shuffleButtonClick">
+                                    <materialDesign:PackIcon Name="ShuffleIcon" Kind="ShuffleDisabled" Height="30" Width="30"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0">
+                                    <materialDesign:PackIcon Kind="SkipBackwardOutline" Height="40" Width="40"/>
+                                </Button>
+                                <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0" Click="PlayMusicButtonClick">
+                                    <materialDesign:PackIcon Name="playMusic" Kind="PlayCircle" Height="50" Width="50"/>
+                                </Button>
+                                <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0">
+                                    <materialDesign:PackIcon Kind="SkipForwardOutline" Height="40" Width="40"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Right">
+                                <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0" Click="repeatButtonClick">
+                                    <materialDesign:PackIcon Name="RepeatIcon" Kind="RepeatOff" Height="30" Width="30"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+</Window>
