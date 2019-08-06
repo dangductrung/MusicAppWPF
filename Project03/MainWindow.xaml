@@ -42,7 +42,12 @@
                         </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
-                    
+                    <TreeView.Resources>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="IsSelected"
+                    Value="{Binding Path=IsSelectedTreeView, Mode=TwoWay}" />
+                        </Style>
+                    </TreeView.Resources>
                 </TreeView>
             </StackPanel>
             <Grid Height="50" VerticalAlignment="Bottom">

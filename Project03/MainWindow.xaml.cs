@@ -31,13 +31,14 @@ namespace Project03
         bool isPlay = false;
         int repeatStatus = 1;
         string currentListName = "Current Playlist";
-        public MediaPlayer currentMediaPlayer;
+        public MediaPlayer currentMediaPlayer = new MediaPlayer();
         DispatcherTimer _timer = new DispatcherTimer();
+
         public BindingList<MenuItem> root = new BindingList<MenuItem>();
         static class RepeatStatus
         {
-            //Repeat unlimited
-            public static int isRepeat = 0;
+            //Repeat unlimited list
+            public static int isRepeatList = 0;
             //Repeat one time
             public static int isRepeatOff = 1;
             //Repeat current music unlimited
@@ -50,9 +51,12 @@ namespace Project03
                 this.Items = new ObservableCollection<MenuItem>();
             }
             private MediaPlayer _media;
-            private string _title; 
-            private bool _isSelected; 
-            public ObservableCollection<MenuItem> Items { get => _items;
+            private string _title;
+            private bool _isSelected;
+            private bool _isSelectedTreeView;
+            public ObservableCollection<MenuItem> Items
+            {
+                get => _items;
                 set
                 {
                     _items = value;
@@ -89,6 +93,17 @@ namespace Project03
                     RaiseEvent();
                 }
             }
+
+            public bool IsSelectedTreeView
+            {
+                get => _isSelectedTreeView;
+                set
+                {
+                    _isSelectedTreeView = value;
+                    RaiseEvent();
+                }
+            }
+
             private ObservableCollection<MenuItem> _items;
 
             public event PropertyChangedEventHandler PropertyChanged;
@@ -104,8 +119,9 @@ namespace Project03
             InitializeComponent();
             //Create root of currentListMedia
             currentPlayList.ItemsSource = root;
-            MenuItem childItem1 = new MenuItem() { Title = currentListName,IsSelected = false };
-
+            MenuItem childItem1 = new MenuItem() { Title = currentListName, IsSelected = false, IsSelectedTreeView = false };
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Tick += _timer_Tick;
             root.Add(childItem1);
         }
         /// <summary>
@@ -115,11 +131,12 @@ namespace Project03
         /// <param name="e"></param>
         private void changeValueSliderbar(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
-            TimeSpan span = new TimeSpan(0, (int)(SliderMusicBar.Value / 60), (int)(SliderMusicBar.Value % 60)) ;
-            currentTime.Content = String.Format("{0}", span.ToString(@"mm\:ss"));
-            currentMediaPlayer.Position = span;
-            
+            if (currentMediaPlayer != null)
+            {
+                TimeSpan span = new TimeSpan(0, (int)(SliderMusicBar.Value / 60), (int)(SliderMusicBar.Value % 60));
+                currentTime.Content = String.Format("{0}", span.ToString(@"mm\:ss"));
+                currentMediaPlayer.Position = span;
+            }
         }
         /// <summary>
         /// TODO: Change status and update UI of repeat button
@@ -130,7 +147,7 @@ namespace Project03
         {
             repeatStatus = ++repeatStatus % 3;
 
-            if (repeatStatus == RepeatStatus.isRepeat)
+            if (repeatStatus == RepeatStatus.isRepeatList)
             {
                 RepeatIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Repeat;
             }
@@ -168,36 +185,151 @@ namespace Project03
         private void selectedMusic(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var music = currentPlayList.SelectedItem as MenuItem;
-
-            if (music.Title != currentListName)
+            if (music != null)
             {
-
-                currentMediaPlayer = music.media;
-                currentMediaNameTextBlock.Text = music.Title;
-                currentMediaPlayer.Play();
-
-                currentTime.Content = String.Format("{0}", currentMediaPlayer.Position.ToString(@"mm\:ss"));
-
-                while(!currentMediaPlayer.NaturalDuration.HasTimeSpan)
+                if (currentMediaPlayer != null && music.Title != currentListName)
                 {
-                    
+                    StopCurrentMedia();
                 }
-                fullTime.Content = String.Format("{0}", currentMediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
-                currentMediaPlayer.Stop();
-                
-                TimeSpan end = currentMediaPlayer.NaturalDuration.TimeSpan;
-                
-                SliderMusicBar.Maximum = end.Minutes * 60 + end.Seconds;
-                SliderMusicBar.Minimum = 0;
-                SliderMusicBar.Value = 0;
-                currentMediaPlayer.MediaEnded += CurrentMediaPlayer_MediaEnded;
+
+
+                if (music.Title != currentListName)
+                {
+                    changeCurrentMedia(music);
+                }
             }
-                
         }
 
+        #region Handle
+        void changeCurrentMedia(MenuItem music)
+        {
+            currentMediaPlayer = music.media;
+            currentMediaNameTextBlock.Text = music.Title;
+            currentMediaPlayer.Play();
+            currentTime.Content = String.Format("{0}", currentMediaPlayer.Position.ToString(@"mm\:ss"));
+            while (!currentMediaPlayer.NaturalDuration.HasTimeSpan)
+            {
+
+            }
+            fullTime.Content = String.Format("{0}", currentMediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
+            currentMediaPlayer.Stop();
+
+            TimeSpan end = currentMediaPlayer.NaturalDuration.TimeSpan;
+
+            SliderMusicBar.Maximum = end.TotalSeconds;
+            SliderMusicBar.Value = 0;
+            currentMediaPlayer.MediaEnded += CurrentMediaPlayer_MediaEnded;
+        }
+
+        void StopCurrentMedia()
+        {
+            _timer.Stop();
+            currentMediaPlayer.Stop();
+            SliderMusicBar.Value = 0;
+            SliderMusicBar.Maximum = 0;
+            currentMediaNameTextBlock.Text = "";
+            fullTime.Content = "00:00";
+            playMusic.Kind = MaterialDesignThemes.Wpf.PackIconKind.PlayCircle;
+            isPlay = false;
+        }
+
+        int findIndex(MediaPlayer media)
+        {
+            int result = 0;
+            for (int i = 0; i < root[0].Items.Count; i++)
+            {
+                if (root[0].Items[i].media == media)
+                {
+                    result = i;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        void PlayCurrentMusic()
+        {
+            playMusic.Kind = MaterialDesignThemes.Wpf.PackIconKind.PauseCircle;
+            if (currentMediaPlayer != null)
+            {
+                currentMediaPlayer.Play();
+                _timer.Start();
+            }
+            isPlay = true;
+        }
+
+        void AddMediaIntoRoot(String url)
+        {
+            //Create child to add into CurrentListMedia
+            MenuItem item = new MenuItem();
+            item.media = new MediaPlayer();
+            item.media.Open(new Uri(url));
+            item.IsSelected = root[0].IsSelected;
+            item.IsSelectedTreeView = false;
+            //Split path to get name of media
+            string[] tokens = url.Split(new String[] { "\\", "." }, StringSplitOptions.RemoveEmptyEntries);
+            item.Title = tokens[tokens.Count() - 2];
+            //Check if media is exist in currentListMedia
+            if (!isExistInCurrentList(item.media))
+            {
+                root[0].Items.Add(item);
+            }
+            //Handle if dont have any media but play music is on
+            if (currentMediaPlayer == null)
+            {
+                isPlay = false;
+                playMusic.Kind = MaterialDesignThemes.Wpf.PackIconKind.PlayCircle;
+            }
+        }
+
+        void PauseCurrentMusic()
+        {
+            playMusic.Kind = MaterialDesignThemes.Wpf.PackIconKind.PlayCircle;
+            if (currentMediaPlayer != null)
+            {
+                currentMediaPlayer.Pause();
+                _timer.Stop();
+            }
+            isPlay = false;
+        } 
+        #endregion
         private void CurrentMediaPlayer_MediaEnded(object sender, EventArgs e)
         {
-
+            if (repeatStatus == RepeatStatus.isRepeatOne)
+            {
+                currentMediaPlayer.Position = new TimeSpan(0, 0, 0);
+                SliderMusicBar.Value = 0;
+                currentMediaPlayer.Play();
+            }
+            else if (repeatStatus == RepeatStatus.isRepeatOff)
+            {
+                int indexCurrent = findIndex(currentMediaPlayer);
+                if (isShuffle == false && indexCurrent < (root[0].Items.Count - 1))
+                {
+                    root[0].Items[indexCurrent].IsSelectedTreeView = false;
+                    root[0].Items[indexCurrent + 1].IsSelectedTreeView = true;
+                    PlayCurrentMusic();
+                    currentMediaPlayer.Play();
+                }
+            }
+            else if (repeatStatus == RepeatStatus.isRepeatList)
+            {
+                int indexCurrent = findIndex(currentMediaPlayer);
+                if (isShuffle == false && indexCurrent < (root[0].Items.Count - 1))
+                {
+                    root[0].Items[indexCurrent].IsSelectedTreeView = false;
+                    root[0].Items[indexCurrent + 1].IsSelectedTreeView = true;
+                    PlayCurrentMusic();
+                    currentMediaPlayer.Play();
+                }
+                else
+                {
+                    root[0].Items[indexCurrent].IsSelectedTreeView = false;
+                    root[0].Items[0].IsSelectedTreeView = true;
+                    PlayCurrentMusic();
+                    currentMediaPlayer.Play();
+                }
+            }
         }
 
         /// <summary>
@@ -227,21 +359,27 @@ namespace Project03
         /// <param name="e"></param>
         private void deleteMusic(object sender, RoutedEventArgs e)
         {
-            if(root[0].IsSelected)
+            if (root[0].IsSelected)
             {
+                StopCurrentMedia();
                 root[0].Items.Clear();
             }
-            else { 
-            for(int i = 0;i< root[0].Items.Count();i++)
+            else
             {
-                if(root[0].Items[i].IsSelected)
+                for (int i = 0; i < root[0].Items.Count(); i++)
+                {
+                    if (root[0].Items[i].IsSelected)
                     {
+                        if (root[0].Items[i].media == currentMediaPlayer)
+                        {
+                            StopCurrentMedia();
+                        }
                         root[0].Items.Remove(root[0].Items[i]);
                     }
-            }
+                }
             }
         }
-        
+
         /// <summary>
         /// TODO: Handle play music button click
         /// </summary>
@@ -252,23 +390,12 @@ namespace Project03
             isPlay = !isPlay;
             if (isPlay)
             {
-                playMusic.Kind = MaterialDesignThemes.Wpf.PackIconKind.PauseCircle;
-                if (currentMediaPlayer != null)
-                {
-                    currentMediaPlayer.Play();
-                    _timer.Interval = TimeSpan.FromSeconds(1);
-                    _timer.Tick += _timer_Tick;
-                    _timer.Start();
-                }
+                Debug.WriteLine(isPlay.ToString());
+                PlayCurrentMusic();
             }
             else
             {
-                playMusic.Kind = MaterialDesignThemes.Wpf.PackIconKind.PlayCircle;
-                if (currentMediaPlayer != null)
-                {
-                    currentMediaPlayer.Pause();
-                    _timer.Stop();
-                }
+                PauseCurrentMusic();
             }
         }
         /// <summary>
@@ -310,25 +437,7 @@ namespace Project03
 
             if (openFileDialog.ShowDialog() == true)
             {
-                //Create child to add into CurrentListMedia
-                MenuItem item = new MenuItem();
-                item.media = new MediaPlayer();
-                item.media.Open(new Uri(openFileDialog.FileName));
-                item.IsSelected = root[0].IsSelected;
-                //Split path to get name of media
-                string[] tokens = openFileDialog.FileName.Split(new String[] { "\\", "." }, StringSplitOptions.RemoveEmptyEntries);
-                item.Title = tokens[tokens.Count() - 2];
-                //Check if media is exist in currentListMedia
-                if (!isExistInCurrentList(item.media))
-                {
-                    root[0].Items.Add(item);
-                }
-                //Handle if dont have any media but play music is on
-                if (currentMediaPlayer == null)
-                {
-                    isPlay = false;
-                    playMusic.Kind = MaterialDesignThemes.Wpf.PackIconKind.PlayCircle;
-                }
+                AddMediaIntoRoot(openFileDialog.FileName);
             }
         }
 
@@ -345,7 +454,7 @@ namespace Project03
 
         private void checkBoxUncheckedChanged(object sender, RoutedEventArgs e)
         {
-            
+
             if (!root[0].IsSelected)
             {
                 for (int i = 0; i < root[0].Items.Count(); i++)
@@ -359,28 +468,15 @@ namespace Project03
         {
             System.Windows.Forms.FolderBrowserDialog open = new System.Windows.Forms.FolderBrowserDialog();
             open.ShowDialog();
-            if(open.SelectedPath != "")
+            if (open.SelectedPath != "")
             {
                 var directories = Directory.GetFiles(open.SelectedPath);
 
                 foreach (var directory in directories)
                 {
-                    if (directory.Contains(".mp3") )
+                    if (directory.Contains(".mp3"))
                     {
-                        //Create child to add into CurrentListMedia
-                        MenuItem item = new MenuItem();
-                        item.media = new MediaPlayer();
-                        item.media.Open(new Uri(directory));
-                        item.IsSelected = root[0].IsSelected;
-                        //Split path to get name of media
-                        string[] tokens = directory.Split(new String[] { "\\", "." }, StringSplitOptions.RemoveEmptyEntries);
-                        item.Title = tokens[tokens.Count() - 2];
-                        //Check if media is exist in currentListMedia
-                        if (!isExistInCurrentList(item.media))
-                        {
-                            root[0].Items.Add(item);
-                        }
-                       
+                        AddMediaIntoRoot(directory);
                     }
                 }
                 //Handle if dont have any media but play music is on

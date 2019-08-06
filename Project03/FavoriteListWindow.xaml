@@ -1,0 +1,31 @@
+﻿<Window x:Class="Project03.FavoriteListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project03"
+        mc:Ignorable="d"
+        Title="FavoriteListWindow" Height="450" Width="800">
+    <Grid>
+        <Grid Width="250" Height="300" HorizontalAlignment="Left">
+            
+            <ListView Name="FavoriteList">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding ListName}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        <Grid Width="550" Height="300" HorizontalAlignment="Right">
+
+            <ListView Name="MusicList">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding MusicName}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</Window>
