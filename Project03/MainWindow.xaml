@@ -115,7 +115,7 @@
                 </Grid>
                 <StackPanel>
                     <Grid Height="225" Width="400">
-                        <Image />
+                        <Image Source="/Melody/melody00.jpg"/>
                     </Grid>
                     <TextBlock TextTrimming="CharacterEllipsis"  FontSize="25" Margin="25,0,0,25" Padding="0" Height="30" Name="currentMediaNameTextBlock" />
                 </StackPanel>
@@ -133,13 +133,13 @@
                                 </Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0">
+                                <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0" Click="BackwardButtonClick">
                                     <materialDesign:PackIcon Kind="SkipBackwardOutline" Height="40" Width="40"/>
                                 </Button>
                                 <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0" Click="PlayMusicButtonClick">
                                     <materialDesign:PackIcon Name="playMusic" Kind="PlayCircle" Height="50" Width="50"/>
                                 </Button>
-                                <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0">
+                                <Button Background="Transparent" Height="50" Width="50" Padding="0" BorderThickness="0" Click="ForwardButtonClick">
                                     <materialDesign:PackIcon Kind="SkipForwardOutline" Height="40" Width="40"/>
                                 </Button>
                             </StackPanel>

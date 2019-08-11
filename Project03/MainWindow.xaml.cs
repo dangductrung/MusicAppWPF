@@ -30,10 +30,15 @@ namespace Project03
         bool isShuffle = false;
         bool isPlay = false;
         int repeatStatus = 1;
+        //Store name of current playlist
         string currentListName = "Current Playlist";
+        //Store current media playing
         public MediaPlayer currentMediaPlayer = new MediaPlayer();
+        //Timer for count music time
         DispatcherTimer _timer = new DispatcherTimer();
-
+        //Store past music after Forward
+        public int pastMusicIndex = -1;
+        //Store root of treeview
         public BindingList<MenuItem> root = new BindingList<MenuItem>();
         static class RepeatStatus
         {
@@ -189,10 +194,9 @@ namespace Project03
             {
                 if (currentMediaPlayer != null && music.Title != currentListName)
                 {
+                    UpdatePastMusic();
                     StopCurrentMedia();
                 }
-
-
                 if (music.Title != currentListName)
                 {
                     changeCurrentMedia(music);
@@ -201,8 +205,17 @@ namespace Project03
         }
 
         #region Handle
+
+        void UpdatePastMusic()
+        {
+            pastMusicIndex = findIndex(currentMediaPlayer);
+        }
         void changeCurrentMedia(MenuItem music)
         {
+            if(currentMediaPlayer != null)
+            {
+                UpdatePastMusic();
+            }
             currentMediaPlayer = music.media;
             currentMediaNameTextBlock.Text = music.Title;
             currentMediaPlayer.Play();
@@ -292,42 +305,89 @@ namespace Project03
             }
             isPlay = false;
         } 
+
+        void PlayMusicWithIndex(int index)
+        {
+            int indexCurrent = findIndex(currentMediaPlayer); 
+            root[0].Items[indexCurrent].IsSelectedTreeView = false;
+            root[0].Items[index].IsSelectedTreeView = true;
+            PlayCurrentMusic();
+            currentMediaPlayer.Play();
+        }
+
+        void RandomMusic()
+        {
+            int indexCurrent = findIndex(currentMediaPlayer);
+            //Create random number generator 
+            Random rng = new Random();
+            //Update past position music
+            UpdatePastMusic();
+            int newIndex = rng.Next(indexCurrent + 1, root[0].Items.Count());
+            PlayMusicWithIndex(newIndex);
+        }
+
+        void ForwardMusic(int indexCurrent)
+        {
+            //Update past music before forward 
+            UpdatePastMusic();
+
+            root[0].Items[indexCurrent].IsSelectedTreeView = false;
+            root[0].Items[indexCurrent + 1].IsSelectedTreeView = true;
+            PlayCurrentMusic();
+            currentMediaPlayer.Play();
+        }
+
+        void BackwardMusic(int indexCurrent)
+        {
+            root[0].Items[indexCurrent].IsSelectedTreeView = false;
+            root[0].Items[pastMusicIndex].IsSelectedTreeView = true;
+            PlayCurrentMusic();
+            currentMediaPlayer.Play();
+        }
         #endregion
         private void CurrentMediaPlayer_MediaEnded(object sender, EventArgs e)
         {
+
             if (repeatStatus == RepeatStatus.isRepeatOne)
             {
+                //Repeat music
                 currentMediaPlayer.Position = new TimeSpan(0, 0, 0);
                 SliderMusicBar.Value = 0;
                 currentMediaPlayer.Play();
             }
             else if (repeatStatus == RepeatStatus.isRepeatOff)
             {
+                //Get current index music of playlist
                 int indexCurrent = findIndex(currentMediaPlayer);
+                //Next music
                 if (isShuffle == false && indexCurrent < (root[0].Items.Count - 1))
                 {
-                    root[0].Items[indexCurrent].IsSelectedTreeView = false;
-                    root[0].Items[indexCurrent + 1].IsSelectedTreeView = true;
-                    PlayCurrentMusic();
-                    currentMediaPlayer.Play();
+                    ForwardMusic(indexCurrent);
+                }//Random music
+                else if(isShuffle == true && indexCurrent < (root[0].Items.Count - 1))
+                {
+                    RandomMusic();
                 }
             }
             else if (repeatStatus == RepeatStatus.isRepeatList)
             {
+                //Get current index music of playlist
                 int indexCurrent = findIndex(currentMediaPlayer);
-                if (isShuffle == false && indexCurrent < (root[0].Items.Count - 1))
+                //Turn to next music
+                if (isShuffle == false)
                 {
-                    root[0].Items[indexCurrent].IsSelectedTreeView = false;
-                    root[0].Items[indexCurrent + 1].IsSelectedTreeView = true;
-                    PlayCurrentMusic();
-                    currentMediaPlayer.Play();
+                    if(indexCurrent < (root[0].Items.Count - 1))
+                    {
+                        ForwardMusic(indexCurrent);
+                    }
+                    else
+                    {
+                        PlayMusicWithIndex(0);
+                    }
                 }
-                else
+                else if (isShuffle == true)
                 {
-                    root[0].Items[indexCurrent].IsSelectedTreeView = false;
-                    root[0].Items[0].IsSelectedTreeView = true;
-                    PlayCurrentMusic();
-                    currentMediaPlayer.Play();
+                    RandomMusic();
                 }
             }
         }
@@ -390,7 +450,6 @@ namespace Project03
             isPlay = !isPlay;
             if (isPlay)
             {
-                Debug.WriteLine(isPlay.ToString());
                 PlayCurrentMusic();
             }
             else
@@ -492,6 +551,26 @@ namespace Project03
         {
             var screen = new FavoriteListWindow();
             screen.ShowDialog();
+        }
+
+        private void BackwardButtonClick(object sender, RoutedEventArgs e)
+        {
+            //Get current index music of playlist
+            int indexCurrent = findIndex(currentMediaPlayer);
+            if(indexCurrent > 0)
+            {
+                BackwardMusic(indexCurrent);
+            }
+        }
+
+        private void ForwardButtonClick(object sender, RoutedEventArgs e)
+        {
+            //Get current index music of playlist
+            int indexCurrent = findIndex(currentMediaPlayer);
+            if (indexCurrent >= 0 && indexCurrent < (root[0].Items.Count - 1))
+            {
+                ForwardMusic(indexCurrent);
+            }
         }
     }
 }

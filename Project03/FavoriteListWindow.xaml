@@ -9,13 +9,13 @@
     <Grid>
         <Grid Width="250" Height="300" HorizontalAlignment="Left">
             
-            <ListView Name="FavoriteList">
-                <ListView.ItemTemplate>
+            <ListBox Name="FavoriteList">
+                <ListBox.ItemTemplate>
                     <DataTemplate>
                         <!--<Label Content="{Binding ListName}"/>-->
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
         <Grid Width="450" Height="300" HorizontalAlignment="Right">
             <ListView Name="MusicList">
