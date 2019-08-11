@@ -5,24 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project03"
         mc:Ignorable="d"
-        Title="FavoriteListWindow" Height="450" Width="800">
+        Title="FavoriteListWindow" Height="450" Width="700">
     <Grid>
         <Grid Width="250" Height="300" HorizontalAlignment="Left">
             
             <ListView Name="FavoriteList">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Label Content="{Binding ListName}"/>
+                        <!--<Label Content="{Binding ListName}"/>-->
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-        <Grid Width="550" Height="300" HorizontalAlignment="Right">
-
+        <Grid Width="450" Height="300" HorizontalAlignment="Right">
             <ListView Name="MusicList">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Label Content="{Binding MusicName}"/>
+                        <!--<Label Content="{Binding MusicName}"/>-->
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

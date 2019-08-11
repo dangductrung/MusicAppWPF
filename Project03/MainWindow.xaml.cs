@@ -487,5 +487,11 @@ namespace Project03
                 }
             }
         }
+
+        private void FavoritePlaylistClick(object sender, RoutedEventArgs e)
+        {
+            var screen = new FavoriteListWindow();
+            screen.ShowDialog();
+        }
     }
 }

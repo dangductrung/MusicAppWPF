@@ -20,3 +20,5 @@ C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\Project03.cspr
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\Project03.csproj.CopyComplete
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\Project03.exe
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\Project03.pdb
+C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\FavoriteListWindow.g.cs
+C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\FavoriteListWindow.baml
