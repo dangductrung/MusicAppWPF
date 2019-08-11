@@ -22,3 +22,5 @@ C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\Project03.exe
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\Project03.pdb
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\FavoriteListWindow.g.cs
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\FavoriteListWindow.baml
+C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\AddFavoriteList.g.cs
+C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\AddFavoriteList.baml

@@ -27,6 +27,7 @@ namespace Project03
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Model
         bool isShuffle = false;
         bool isPlay = false;
         int repeatStatus = 1;
@@ -40,6 +41,8 @@ namespace Project03
         public int pastMusicIndex = -1;
         //Store root of treeview
         public BindingList<MenuItem> root = new BindingList<MenuItem>();
+        //Store favorite playlist
+        public BindingList<FavoritePlaylist> favoritePlaylist = new BindingList<FavoritePlaylist>();
         static class RepeatStatus
         {
             //Repeat unlimited list
@@ -48,6 +51,49 @@ namespace Project03
             public static int isRepeatOff = 1;
             //Repeat current music unlimited
             public static int isRepeatOne = 2;
+        }
+
+        /// <summary>
+        /// Contain Favorite Playlist
+        /// </summary>
+        public class FavoritePlaylist : INotifyPropertyChanged
+        {
+            string _name;
+            BindingList<String> _titleList;
+            BindingList<String> _urlList;
+            public string Name
+            {
+                get => _name;
+                set
+                {
+                    _name = value;
+                    RaiseEventChanged();
+                }
+            }
+            public BindingList<String> TitleList
+            {
+                get => _titleList;
+                set
+                {
+                    _titleList = value;
+                    RaiseEventChanged();
+                }
+            }
+
+            public BindingList<String> UrlList
+            {
+                get => _urlList;
+                set
+                {
+                    _urlList = value;
+                    RaiseEventChanged();
+                }
+            }
+            public event PropertyChangedEventHandler PropertyChanged;
+            void RaiseEventChanged([CallerMemberName] string property = "")
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            }
         }
         public class MenuItem : INotifyPropertyChanged
         {
@@ -118,6 +164,7 @@ namespace Project03
 
             }
         }
+        #endregion
 
         public MainWindow()
         {
@@ -326,7 +373,7 @@ namespace Project03
             PlayMusicWithIndex(newIndex);
         }
 
-        void ForwardMusic(int indexCurrent)
+        void NextMusic(int indexCurrent)
         {
             //Update past music before forward 
             UpdatePastMusic();
@@ -335,19 +382,11 @@ namespace Project03
             root[0].Items[indexCurrent + 1].IsSelectedTreeView = true;
             PlayCurrentMusic();
             currentMediaPlayer.Play();
+
         }
 
-        void BackwardMusic(int indexCurrent)
+        void ForwardMusic()
         {
-            root[0].Items[indexCurrent].IsSelectedTreeView = false;
-            root[0].Items[pastMusicIndex].IsSelectedTreeView = true;
-            PlayCurrentMusic();
-            currentMediaPlayer.Play();
-        }
-        #endregion
-        private void CurrentMediaPlayer_MediaEnded(object sender, EventArgs e)
-        {
-
             if (repeatStatus == RepeatStatus.isRepeatOne)
             {
                 //Repeat music
@@ -362,9 +401,9 @@ namespace Project03
                 //Next music
                 if (isShuffle == false && indexCurrent < (root[0].Items.Count - 1))
                 {
-                    ForwardMusic(indexCurrent);
+                    NextMusic(indexCurrent);
                 }//Random music
-                else if(isShuffle == true && indexCurrent < (root[0].Items.Count - 1))
+                else if (isShuffle == true && indexCurrent < (root[0].Items.Count - 1))
                 {
                     RandomMusic();
                 }
@@ -373,23 +412,53 @@ namespace Project03
             {
                 //Get current index music of playlist
                 int indexCurrent = findIndex(currentMediaPlayer);
-                //Turn to next music
-                if (isShuffle == false)
+                ////Turn to next music
+                //if (isShuffle == false)
+                //{
+                //    if (indexCurrent < (root[0].Items.Count - 1))
+                //    {
+                //        NextMusic(indexCurrent);
+                //    }
+                //    else
+                //    {
+                //        PlayMusicWithIndex(0);
+                //    }
+                //}
+                //else if (isShuffle == true)
+                //{
+                //    RandomMusic();
+                //}
+
+                if (indexCurrent < (root[0].Items.Count - 1))
                 {
-                    if(indexCurrent < (root[0].Items.Count - 1))
+                    if (isShuffle == false)
                     {
-                        ForwardMusic(indexCurrent);
+                        NextMusic(indexCurrent);
                     }
                     else
                     {
                         PlayMusicWithIndex(0);
                     }
                 }
-                else if (isShuffle == true)
+                else
                 {
-                    RandomMusic();
+                    PlayMusicWithIndex(0);
                 }
+
             }
+        }
+
+        void BackwardMusic(int indexCurrent)
+        {
+            root[0].Items[indexCurrent].IsSelectedTreeView = false;
+            root[0].Items[pastMusicIndex].IsSelectedTreeView = true;
+            PlayCurrentMusic();
+            currentMediaPlayer.Play();
+        }
+        #endregion
+        private void CurrentMediaPlayer_MediaEnded(object sender, EventArgs e)
+        {
+            ForwardMusic();
         }
 
         /// <summary>
@@ -565,12 +634,13 @@ namespace Project03
 
         private void ForwardButtonClick(object sender, RoutedEventArgs e)
         {
-            //Get current index music of playlist
-            int indexCurrent = findIndex(currentMediaPlayer);
-            if (indexCurrent >= 0 && indexCurrent < (root[0].Items.Count - 1))
-            {
-                ForwardMusic(indexCurrent);
-            }
+            ForwardMusic();
+        }
+
+        private void AddFavoriteButtonClick(object sender, RoutedEventArgs e)
+        {
+            var screen = new AddFavoriteList();
+            screen.ShowDialog();
         }
     }
 }

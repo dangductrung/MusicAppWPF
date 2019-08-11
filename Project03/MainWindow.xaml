@@ -25,7 +25,9 @@
                             Click="deleteMusic">
                         <materialDesign:PackIcon Foreground="#7f8c8d" Kind="Delete" Height="20" Width="20"/>
                     </Button>
-                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Transparent" Padding="0" Margin="0,5,15,0" BorderThickness="0">
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top" 
+                            Background="Transparent" Padding="0" Margin="0,5,15,0" BorderThickness="0"
+                            Click="AddFavoriteButtonClick">
                         <materialDesign:PackIcon Foreground="#7f8c8d" Kind="PlaylistMusic" Height="20" Width="20"/>
                     </Button>
                 </StackPanel>
