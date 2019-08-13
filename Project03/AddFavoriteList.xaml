@@ -10,7 +10,7 @@
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal" >
                 <Label Content="Name:" VerticalContentAlignment="Center"/>
-                <TextBox Height="25" Width="120" BorderThickness="1"/>
+                <TextBox Height="25" Width="120" BorderThickness="1" Name="favoriteListName"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="15">
                 <Button Content="OK" Width="50" Height="25" Margin="10" Click="OKButtonClick"/>

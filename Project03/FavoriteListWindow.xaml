@@ -5,26 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project03"
         mc:Ignorable="d"
-        Title="FavoriteListWindow" Height="450" Width="700">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="FavoriteListWindow" Height="400" Width="700">
     <Grid>
-        <Grid Width="250" Height="300" HorizontalAlignment="Left">
-            
-            <ListBox Name="FavoriteList">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <!--<Label Content="{Binding ListName}"/>-->
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-        <Grid Width="450" Height="300" HorizontalAlignment="Right">
-            <ListView Name="MusicList">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <!--<Label Content="{Binding MusicName}"/>-->
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
+        <StackPanel>
+            <materialDesign:Card Padding="10" Margin="5" Width="300">
+                <TextBlock HorizontalAlignment="Center" FontSize="25" Style="{DynamicResource MaterialDesignTitleTextBlock}">Favorite Playlist</TextBlock>
+            </materialDesign:Card>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" >
+                <StackPanel>
+                <Grid Width="240" Height="248" HorizontalAlignment="Left" >
+                    <ListBox Name="FavoriteList" BorderBrush="Black" 
+                     BorderThickness="1">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+                    <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Button Margin="10" IsCancel="True">
+                            <materialDesign:PackIcon Kind="KeyboardReturn"/>
+                        </Button>
+                        <Button Margin="10" Content="Choose" Click="ChoosePlaylistButtonClick">
+                            
+                        </Button>
+                        <Button DockPanel.Dock="Right" HorizontalAlignment="Right" 
+                            VerticalAlignment="Center" Background="Transparent" 
+                            Padding="0" Margin="0,5,15,0" BorderThickness="0"
+                            Click="deletePlaylist">
+                        <materialDesign:PackIcon Foreground="#7f8c8d" Kind="Delete" Height="20" Width="20"/>
+                    </Button>
+                    </DockPanel>
+                </StackPanel>
+                <Grid Width="450" Height="300" HorizontalAlignment="Right">
+                    <ListBox Name="MusicList" BorderBrush="Black" 
+                     BorderThickness="1">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Title}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

@@ -14,7 +14,8 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Closing="Window_Closing">
     <Grid>
         <Grid Width="250" HorizontalAlignment="Left" Background="#bdc3c7" Name="playlistGrid">
             <StackPanel >
@@ -50,10 +51,20 @@
                     Value="{Binding Path=IsSelectedTreeView, Mode=TwoWay}" />
                         </Style>
                     </TreeView.Resources>
+                    <TreeView.ItemContainerStyle>
+
+                        <Style>
+                            <Setter Property="TreeViewItem.IsSelected"
+                    Value="{Binding Path=IsSelectedTreeView, Mode=TwoWay}" />
+                            <Setter Property="TreeViewItem.IsExpanded" Value="True"/>
+                        </Style>
+                        
+
+                    </TreeView.ItemContainerStyle>
                 </TreeView>
             </StackPanel>
             <Grid Height="50" VerticalAlignment="Bottom">
-                
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Button ToolTip="Favorite playlist" Click="FavoritePlaylistClick" Margin="10" Padding="0" Height="30" Width="30" Background="Transparent" BorderThickness="0">
                         <materialDesign:PackIcon Foreground="#7f8c8d" Kind="LibraryMusic" Height="30" Width="30"/>
@@ -78,42 +89,30 @@
                             <materialDesign:PackIcon Height="30" Width="30" Kind="FileDocument" Foreground="#7f8c8d"/>
                         </materialDesign:PopupBox.ToggleContent>
                         <StackPanel>
-                            <Button ToolTip="Open File Playlist"  HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Padding="0" Height="30" Width="30" Background="Transparent" BorderThickness="0">
-                                <materialDesign:PackIcon Kind="File" Height="30" Foreground="#7f8c8d" Width="30"/>
+                            <Button ToolTip="Open File Playlist"  
+                                    HorizontalContentAlignment="Center" VerticalContentAlignment="Top" 
+                                    Padding="0" Height="30" Width="30" Background="Transparent"
+                                    BorderThickness="0" Click="OpenPlaylistButtonClick">
+                                <materialDesign:PackIcon Kind="File" Height="30"
+                                                         Foreground="#7f8c8d" Width="30"/>
                             </Button>
-                            <Button ToolTip="Save Playlist" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Padding="0" Height="30" Width="30" Background="Transparent" BorderThickness="0">
+                            <Button ToolTip="Save Playlist" HorizontalContentAlignment="Center" 
+                                    VerticalContentAlignment="Top" Padding="0" Height="30" Width="30" 
+                                    Background="Transparent" BorderThickness="0"
+                                    Click="SavePlaylistButtonClick">
                                 <materialDesign:PackIcon Kind="ContentSave" Height="30" Width="30" Foreground="#7f8c8d"/>
                             </Button>
                         </StackPanel>
                     </materialDesign:PopupBox>
-
-                    <Button ToolTip="Setting Stop Time" Background="Transparent" BorderThickness="0" Padding="0" Margin="10">
-                        <materialDesign:PackIcon Kind="Alarm" Height="30" Width="30" Foreground="#7f8c8d"/>
-                    </Button>
                 </StackPanel>
-                <ToggleButton HorizontalAlignment="Right" ToolTip="Dark Theme" Click="darkThemeMode" Name="themeToggle" Margin="10"/>
+                <ToggleButton HorizontalAlignment="Right" ToolTip="Dark Theme" Click="darkThemeMode" Name="themeToggle" Margin="10,10,30,10"/>
             </Grid>
         </Grid>
 
         <Grid Width="550" HorizontalAlignment="Right" Background="#34495e" Name="controlMusicGrid">
             <StackPanel>
-                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                    <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges">
-                        <StackPanel>
-                            <Button>
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="Clock" Margin="5"/>
-                                    <Label Content="Timer"/>
-                                </StackPanel>
-                            </Button>
-                            <Button>
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="PlaylistMusic" Margin="5"/>
-                                    <Label Content="Add to playlist"/>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
-                    </materialDesign:PopupBox>
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Height="20" Margin="10">
+                    
                 </Grid>
                 <StackPanel>
                     <Grid Height="225" Width="400">

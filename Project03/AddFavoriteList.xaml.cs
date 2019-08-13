@@ -19,13 +19,25 @@ namespace Project03
     /// </summary>
     public partial class AddFavoriteList : Window
     {
-        public AddFavoriteList()
+        public string Name = "";
+        public AddFavoriteList(string title)
         {
             InitializeComponent();
+            this.Title = title;
         }
 
         private void OKButtonClick(object sender, RoutedEventArgs e)
         {
+            if(favoriteListName.Text != "")
+            {
+                Name = favoriteListName.Text;
+                DialogResult = true;
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Invalid!", "Invalid", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
         }
     }

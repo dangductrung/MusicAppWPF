@@ -24,3 +24,4 @@ C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\FavoriteListWi
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\FavoriteListWindow.baml
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\AddFavoriteList.g.cs
 C:\Users\Trung Dang\Desktop\Project\Project03\Project03\obj\Debug\AddFavoriteList.baml
+C:\Users\Trung Dang\Desktop\Project\Project03\Project03\bin\Debug\Gma.System.MouseKeyHook.dll
