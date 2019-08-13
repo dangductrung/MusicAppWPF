@@ -167,6 +167,9 @@ namespace Project03
             {
                 LoadFavoritePlaylistWithTextFile("../../FavoritePlaylist.txt");
             }
+
+            LoadCurrentPlaylistWithTextFile("../../LastPlaylist.txt");
+
         }
         /// <summary>
         /// TODO: Handle when people using slider bar to change time of current media
@@ -477,23 +480,26 @@ namespace Project03
 
         void SaveCurrentPlaylistWithTextFile(string url)
         {
+
             var write = new StreamWriter(url);
-            write.WriteLine($"IsShuffle={isShuffle.ToString()}");
-            write.WriteLine($"IsPlay={isPlay.ToString()}");
-            write.WriteLine($"RepeatStatus={repeatStatus.ToString()}");
-            write.WriteLine($"PastMusicIndex={pastMusicIndex.ToString()}");
-            write.WriteLine($"CurrentMediaSelectedIndex={findIndex(currentMediaPlayer).ToString()}");
-            write.WriteLine($"CurrentPositionTime={currentMediaPlayer.Position.ToString()}");
-            write.WriteLine($"Count={root[0].Items.Count.ToString()}");
-            foreach (var element in root[0].Items)
+            if (root[0].Items.Count > 0)
             {
-                write.WriteLine($"Source={element.media.Source}");
-                write.WriteLine($"Title={element.Title}");
-                write.WriteLine($"IsSelected={element.IsSelected.ToString()}");
-                write.WriteLine($"IsSelectedTreeView={element.IsSelectedTreeView.ToString()}");
+                write.WriteLine($"IsShuffle={isShuffle.ToString()}");
+                write.WriteLine($"IsPlay={isPlay.ToString()}");
+                write.WriteLine($"RepeatStatus={repeatStatus.ToString()}");
+                write.WriteLine($"PastMusicIndex={pastMusicIndex.ToString()}");
+                write.WriteLine($"CurrentMediaSelectedIndex={findIndex(currentMediaPlayer).ToString()}");
+                write.WriteLine($"CurrentPositionTime={currentMediaPlayer.Position.ToString()}");
+                write.WriteLine($"Count={root[0].Items.Count.ToString()}");
+                foreach (var element in root[0].Items)
+                {
+                    write.WriteLine($"Source={element.media.Source}");
+                    write.WriteLine($"Title={element.Title}");
+                    write.WriteLine($"IsSelected={element.IsSelected.ToString()}");
+                    write.WriteLine($"IsSelectedTreeView={element.IsSelectedTreeView.ToString()}");
+                }
             }
             write.Close();
-            MessageBox.Show("Successful!", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         void LoadCurrentPlaylistWithTextFile(string url)
@@ -502,113 +508,115 @@ namespace Project03
             string temp = "";
             //Read shuffle status
             temp = reader.ReadLine();
-            //Split key with value
-            string[] tokens = temp.Split('=');
-            isShuffle = bool.Parse(tokens[1]);
-            changeShuffle();
-
-            //Read play status
-            temp = "";
-            temp = reader.ReadLine();
-            //Split key with value
-            tokens = temp.Split('=');
-            isPlay = bool.Parse(tokens[1]);
-            changePlayIcon();
-
-            //Read repeat status
-            temp = "";
-            temp = reader.ReadLine();
-            //Split key with value
-            tokens = temp.Split('=');
-            repeatStatus = int.Parse(tokens[1]);
-            changeRepeat();
-
-            //Read past music index 
-            temp = "";
-            temp = reader.ReadLine();
-            //Split key with value
-            tokens = temp.Split('=');
-            pastMusicIndex = int.Parse(tokens[1]);
-
-            //Read current media selected index
-            temp = "";
-            temp = reader.ReadLine();
-            //Split key with value
-            tokens = temp.Split('=');
-            int currentIndex = int.Parse(tokens[1]);
-
-            //Read current position time
-            temp = "";
-            temp = reader.ReadLine();
-            //Split key with value
-            tokens = temp.Split('=');
-
-            string timeSpanString = tokens[1];
-            string[] timeSpanTokens = timeSpanString.Split(':');
-            string[] second = timeSpanTokens[2].Split('.');
-            TimeSpan currentPosition = new TimeSpan(int.Parse(timeSpanTokens[0]), int.Parse(timeSpanTokens[1]), int.Parse(second[0]));
-            
-            //Read size
-            temp = "";
-            temp = reader.ReadLine();
-            //Split key with value
-            tokens = temp.Split('=');
-            int count = int.Parse(tokens[1]);
-
-            root[0].Items.Clear();
-            for(int i = 0; i < count; i++)
+            if(temp != null)
             {
-                string source = "";
-                string title = "";
-                bool isSelected = false;
-                bool isSelectedTreeView = false;
-                //Read source
+                //Split key with value
+                string[] tokens = temp.Split('=');
+                isShuffle = bool.Parse(tokens[1]);
+                changeShuffle();
+
+                //Read play status
                 temp = "";
                 temp = reader.ReadLine();
                 //Split key with value
                 tokens = temp.Split('=');
-                source = tokens[1];
+                isPlay = bool.Parse(tokens[1]);
+                changePlayIcon();
 
-                //Read title;
+                //Read repeat status
                 temp = "";
                 temp = reader.ReadLine();
                 //Split key with value
                 tokens = temp.Split('=');
-                title = tokens[1];
+                repeatStatus = int.Parse(tokens[1]);
+                changeRepeat();
 
-                //Read select status
+                //Read past music index 
                 temp = "";
                 temp = reader.ReadLine();
                 //Split key with value
                 tokens = temp.Split('=');
-                isSelected = bool.Parse(tokens[1]);
+                pastMusicIndex = int.Parse(tokens[1]);
 
-                //Read treeview status
+                //Read current media selected index
                 temp = "";
                 temp = reader.ReadLine();
                 //Split key with value
                 tokens = temp.Split('=');
-                isSelectedTreeView = bool.Parse(tokens[1]);
+                int currentIndex = int.Parse(tokens[1]);
 
-                MenuItem element = new MenuItem ();
-                element.media = new MediaPlayer();
-                element.media.Open(new Uri ( source ));
-                element.Title = title;
-                element.IsSelected = isSelected;
-                element.IsSelectedTreeView = isSelectedTreeView;
+                //Read current position time
+                temp = "";
+                temp = reader.ReadLine();
+                //Split key with value
+                tokens = temp.Split('=');
 
-                root[0].Items.Add(element);
+                string timeSpanString = tokens[1];
+                string[] timeSpanTokens = timeSpanString.Split(':');
+                string[] second = timeSpanTokens[2].Split('.');
+                TimeSpan currentPosition = new TimeSpan(int.Parse(timeSpanTokens[0]), int.Parse(timeSpanTokens[1]), int.Parse(second[0]));
+
+                //Read size
+                temp = "";
+                temp = reader.ReadLine();
+                //Split key with value
+                tokens = temp.Split('=');
+                int count = int.Parse(tokens[1]);
+
+                root[0].Items.Clear();
+                for (int i = 0; i < count; i++)
+                {
+                    string source = "";
+                    string title = "";
+                    bool isSelected = false;
+                    bool isSelectedTreeView = false;
+                    //Read source
+                    temp = "";
+                    temp = reader.ReadLine();
+                    //Split key with value
+                    tokens = temp.Split('=');
+                    source = tokens[1];
+
+                    //Read title;
+                    temp = "";
+                    temp = reader.ReadLine();
+                    //Split key with value
+                    tokens = temp.Split('=');
+                    title = tokens[1];
+
+                    //Read select status
+                    temp = "";
+                    temp = reader.ReadLine();
+                    //Split key with value
+                    tokens = temp.Split('=');
+                    isSelected = bool.Parse(tokens[1]);
+
+                    //Read treeview status
+                    temp = "";
+                    temp = reader.ReadLine();
+                    //Split key with value
+                    tokens = temp.Split('=');
+                    isSelectedTreeView = bool.Parse(tokens[1]);
+
+                    MenuItem element = new MenuItem();
+                    element.media = new MediaPlayer();
+                    element.media.Open(new Uri(source));
+                    element.Title = title;
+                    element.IsSelected = isSelected;
+                    element.IsSelectedTreeView = isSelectedTreeView;
+
+                    root[0].Items.Add(element);
+                }
+
+                changeCurrentMedia(root[0].Items[currentIndex]);
+                PlayCurrentMusic();
+                SliderMusicBar.Value = currentPosition.TotalSeconds;
+
+                root[0].Items[currentIndex].IsSelectedTreeView = true;
+
+                reader.Close();
             }
-
-            changeCurrentMedia(root[0].Items[currentIndex]);
-            PlayCurrentMusic();
-            SliderMusicBar.Value = currentPosition.TotalSeconds;
-
-            root[0].Items[currentIndex].IsSelectedTreeView = true;
             
-            reader.Close();
-            
-            MessageBox.Show("Successful!", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         void SaveCurrentPlaylistWithXMLFile(string url)
@@ -636,7 +644,6 @@ namespace Project03
             }
             doc.AppendChild(root);
             doc.Save(url);
-            MessageBox.Show("Successful!", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         void LoadCurrentPlaylistWithXMLFile(string url)
@@ -645,6 +652,7 @@ namespace Project03
             doc.Load(url);
 
             var root = doc.DocumentElement;
+            
             isShuffle = bool.Parse(root.Attributes["IsShuffle"].Value);
             isPlay = bool.Parse(root.Attributes["IsPlay"].Value);
             repeatStatus = int.Parse(root.Attributes["RepeatStatus"].Value);
@@ -669,8 +677,6 @@ namespace Project03
             changeCurrentMedia(this.root[0].Items[currentIndex]);
             PlayCurrentMusic();
             SliderMusicBar.Value = currentPosition.TotalSeconds;
-
-            MessageBox.Show("Successful!", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         void SaveFavoritePlaylistWithTextFile(string url)
@@ -697,7 +703,6 @@ namespace Project03
             string temp = reader.ReadLine();
             if(temp != null)
             {
-
                 string[] tokens = temp.Split('=');
                 int favoriteListSize = int.Parse(tokens[1]);
                 for (int i = 0; i < favoriteListSize; i++)
@@ -962,10 +967,12 @@ namespace Project03
                 if(tokens[tokens.Count() - 1] == "txt")
                 {
                     SaveCurrentPlaylistWithTextFile(screen.FileName);
+                    MessageBox.Show("Successful!", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else if(tokens[tokens.Count() - 1] == "xml")
                 {
                     SaveCurrentPlaylistWithXMLFile(screen.FileName);
+                    MessageBox.Show("Successful!", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
@@ -980,10 +987,12 @@ namespace Project03
                 if (tokens[tokens.Count() - 1] == "txt")
                 {
                     LoadCurrentPlaylistWithTextFile(screen.FileName);
+                    MessageBox.Show("Successful!", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else if (tokens[tokens.Count() - 1] == "xml")
                 {
                     LoadCurrentPlaylistWithXMLFile(screen.FileName);
+                    MessageBox.Show("Successful!", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
@@ -992,6 +1001,8 @@ namespace Project03
         {
             //Save favorite playlist into text file
             SaveFavoritePlaylistWithTextFile("../../FavoritePlaylist.txt");
+            //Save last playlist
+            SaveCurrentPlaylistWithTextFile("../../LastPlaylist.txt");
             Unsubscribe();
         }
 
@@ -1027,8 +1038,6 @@ namespace Project03
                 BackwardMusic();
             }
         }
-
-
         public void Unsubscribe()
         {
             _hook.KeyUp -= _hook_KeyUp1;
