@@ -439,7 +439,7 @@ namespace Project03
                     }
                     else
                     {
-                        PlayMusicWithIndex(0);
+                        RandomMusic();
                     }
                 }
                 else
@@ -765,6 +765,7 @@ namespace Project03
                 var bc = new BrushConverter();
                 playlistGrid.Background = (Brush)bc.ConvertFrom("#353b48");
                 controlMusicGrid.Background = (Brush)bc.ConvertFrom("#2f3640");
+
             }
             else
             {
@@ -784,6 +785,7 @@ namespace Project03
             {
                 StopCurrentMedia();
                 root[0].Items.Clear();
+                root[0].IsSelected = false;
             }
             else
             {
@@ -869,6 +871,19 @@ namespace Project03
                 {
                     root[0].Items[i].IsSelected = true;
                 }
+            }
+            else
+            {
+                bool check = true;
+                for (int i = 0; i < root[0].Items.Count(); i++)
+                {
+                    if(root[0].Items[i].IsSelected == false)
+                    {
+                        check = false;
+                        break;
+                    }
+                }
+                root[0].IsSelected = check;
             }
         }
 

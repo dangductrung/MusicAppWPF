@@ -105,7 +105,7 @@
                         </StackPanel>
                     </materialDesign:PopupBox>
                 </StackPanel>
-                <ToggleButton HorizontalAlignment="Right" ToolTip="Dark Theme" Click="darkThemeMode" Name="themeToggle" Margin="10,10,30,10"/>
+                <ToggleButton HorizontalAlignment="Right" ToolTip="Dark Mode" Click="darkThemeMode" Name="themeToggle" Margin="10,10,30,10"/>
             </Grid>
         </Grid>
 
