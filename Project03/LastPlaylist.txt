@@ -35,5 +35,5 @@ IsSelected=True
 IsSelectedTreeView=False
 Source=file:///C:/Users/Trung Dang/Desktop/Project/Project03/Project03/MediaTest/08.mp3
 Title=08
-IsSelected=True
+IsSelected=False
 IsSelectedTreeView=False
